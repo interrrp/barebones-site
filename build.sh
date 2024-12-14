@@ -5,7 +5,7 @@ rm -rf build
 mkdir -p build/posts
 cp -r static build/static
 
-post_list_file=$(mktemp --suffix .md)
+post_list_file=$(mktemp)
 echo "---
 title: int
 ---
@@ -20,12 +20,13 @@ find posts/*.md | while IFS= read -r md_file_path; do
     echo "- [$post_title](posts/$post_link)" >>"$post_list_file"
 
     pandoc "$md_file_path" \
+        --from gfm \
         --output "$build_path" \
-        --template templates/post.html \
-        --from gfm
+        --template templates/post.html
 done
 
 pandoc "$post_list_file" \
+    --from gfm \
     --template templates/index.html \
     --output build/index.html
 
